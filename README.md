@@ -3,6 +3,7 @@
 ## Technologie utilisée :
 
 * HTML
+* CSS
 * Bootstrap
 
 ## Les photos sont toutes libre de droit et proviennent de :
