@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  ## PHP-Apache service
+  server:
+    build:
+      context: ./application
+    container_name: restaurant-webserver
+    ports:
+      - 800:80
+    restart: always
+    volumes:
+      - ./application/src:/var/www/html
+    environment:
+      - ALLOW_OVERRIDE=1
+    env_file:
+      - ./docker.env
+    networks:
+      - restaurant
+
+  ## MariaDB service
+  database:
+    image: mariadb:10.4.2
+    container_name: restaurant-database
+    restart: always
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d/
+      - restaurant_data:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    env_file:
+      - ./docker.env
+    networks:
+      - restaurant
+
+  ## PhpMyAdmin
+  myadmin:
+    image: phpmyadmin/phpmyadmin:4.8.1
+    container_name: restaurant-phpmyadmin
+    ports:
+      - 8081:80
+    restart: always
+    env_file:
+      - ./docker.env
+    depends_on:
+      - database
+    networks:
+      - restaurant
+
+networks:
+  restaurant:
+
+volumes:
+  restaurant_data:
